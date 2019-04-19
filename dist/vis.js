@@ -5,7 +5,7 @@
  * A dynamic, browser-based visualization library.
  *
  * @version 4.21.0
- * @date    2019-04-18
+ * @date    2019-04-19
  *
  * @license
  * Copyright (C) 2011-2017 Almende B.V, http://almende.com
@@ -52633,32 +52633,6 @@ var CanvasRenderer = function () {
       });
       var viewableArea = { top: topLeft.y, left: topLeft.x, bottom: bottomRight.y, right: bottomRight.x };
 
-      // draw unselected nodes;
-      for (var i = 0; i < nodeIndices.length; i++) {
-        node = nodes[nodeIndices[i]];
-        // set selected nodes aside
-        if (node.isSelected()) {
-          selected.push(nodeIndices[i]);
-        } else {
-          if (alwaysShow === true) {
-            node.draw(ctx);
-          } else if (node.isBoundingBoxOverlappingWith(viewableArea) === true) {
-            node.draw(ctx);
-          } else {
-            node.updateBoundingBox(ctx, node.selected);
-          }
-        }
-      }
-
-      // draw the selected nodes on top
-      for (var _i = 0; _i < selected.length; _i++) {
-        node = nodes[selected[_i]];
-        node.draw(ctx);
-      }
-
-      debugger;
-
-      var margin2 = 50;
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
       var _iteratorError = undefined;
@@ -52679,10 +52653,10 @@ var CanvasRenderer = function () {
             for (var _iterator2 = (0, _getIterator3["default"])(bound.ids), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
               var id = _step2.value;
 
-              minX = Math.min(minX, nodes[id].x - nodes[id].options.size / 2);
-              minY = Math.min(minY, nodes[id].y - nodes[id].options.size / 2);
-              maxX = Math.max(maxX, nodes[id].x + nodes[id].options.size / 2);
-              maxY = Math.max(maxY, nodes[id].y + nodes[id].options.size / 2);
+              minX = Math.min(minX, nodes[id].x - nodes[id].options.size);
+              minY = Math.min(minY, nodes[id].y - nodes[id].options.size);
+              maxX = Math.max(maxX, nodes[id].x + nodes[id].options.size);
+              maxY = Math.max(maxY, nodes[id].y + nodes[id].options.size);
             }
           } catch (err) {
             _didIteratorError2 = true;
@@ -52701,11 +52675,11 @@ var CanvasRenderer = function () {
 
           ctx.strokeStyle = '#9f9f9f';
           ctx.beginPath();
-          ctx.roundRect(minX - margin2, minY - margin2, maxX - minX + margin2, maxY - minY + margin2, 10);
+          ctx.roundRect(minX - margin, minY - margin, maxX - minX + margin, maxY - minY + margin, 10);
           ctx.stroke();
         }
 
-        //console.log(nodes[0].x);
+        // draw unselected nodes;
       } catch (err) {
         _didIteratorError = true;
         _iteratorError = err;
@@ -52719,6 +52693,28 @@ var CanvasRenderer = function () {
             throw _iteratorError;
           }
         }
+      }
+
+      for (var i = 0; i < nodeIndices.length; i++) {
+        node = nodes[nodeIndices[i]];
+        // set selected nodes aside
+        if (node.isSelected()) {
+          selected.push(nodeIndices[i]);
+        } else {
+          if (alwaysShow === true) {
+            node.draw(ctx);
+          } else if (node.isBoundingBoxOverlappingWith(viewableArea) === true) {
+            node.draw(ctx);
+          } else {
+            node.updateBoundingBox(ctx, node.selected);
+          }
+        }
+      }
+
+      // draw the selected nodes on top
+      for (var _i = 0; _i < selected.length; _i++) {
+        node = nodes[selected[_i]];
+        node.draw(ctx);
       }
     }
 
